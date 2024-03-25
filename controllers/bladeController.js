@@ -36,8 +36,8 @@ const addBlade = async (req, res) => {
             dementions, 
             material, 
             alloySteelCode, 
-            IdealFor, 
-            HardnessRanges
+            idealFor, 
+            hardnessRanges
         } = req.body;
 
         const product = await Product.create({
@@ -52,8 +52,8 @@ const addBlade = async (req, res) => {
             dementions, 
             material, 
             alloySteelCode, 
-            IdealFor, 
-            HardnessRanges
+            idealFor, 
+            hardnessRanges
         });
 
         await blade.setProduct(product);
@@ -85,14 +85,50 @@ const deleteBlade = async (req, res) => {
           });
         res.status(202).json({ message: "Blade is deleted!" });
     } catch (error) {
-      console.error('Error deleting machine:', error);
-      res.status(500).json({ error: 'Unable to delete machine' });
+        console.error('Error deleting blade:', error);
+        res.status(500).json({ error: 'Unable to delete blade' });
     }
-  }
+}
 
+const updateBlade = async (req, res) => {
+    const bladeId = req.params.id;
+    const updatedData = req.body;
+    try {
+        const blade = await Blade.findOne({ where: { id: bladeId }});
+        if (!blade) {
+            return res.status(404).json({ error: 'Blade not found' });
+        }
+
+        await blade.update({
+            dementions: updatedData.dementions, 
+            material: updatedData.material, 
+            alloySteelCode: updatedData.alloySteelCode, 
+            idealFor: updatedData.idealFor, 
+            hardnessRanges: updatedData.hardnessRanges
+        });
+  
+        const product = await Product.findOne({ where: { id: blade.productId }});
+        if (!product) {
+            return res.status(404).json({ error: 'Associated product not found' });
+        }
+        await product.update({ 
+            title: updatedData.title,
+            industry: updatedData.industry,
+            price: updatedData.price,
+            description: updatedData.description,
+            images: updatedData.images
+        });
+    
+        res.status(200).json({ message: 'Blade updated successfully' });
+    } catch (error) {
+        console.error('Error updating blade:', error);
+        res.status(500).json({ error: 'Unable to update blade' });
+    }
+}
 module.exports = {
     getAllProducts,
     getAllBlades,
     addBlade,
-    deleteBlade
+    deleteBlade,
+    updateBlade
 }

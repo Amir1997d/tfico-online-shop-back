@@ -14,11 +14,11 @@ const Blade = sequelize.define('blade', {
         type: DataTypes.STRING,
         allowNull: true,
     },
-    IdealFor: {
+    idealFor: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    HardnessRanges: {
+    hardnessRanges: {
         type: DataTypes.STRING,
         allowNull: false,
     }

@@ -21,10 +21,10 @@ const addMachine = async (req, res) => {
             price, 
             description, 
             images, 
-            type,
+            machineType,
             warranty,
             cnc,
-            machineSize
+            size
         } = req.body;
 
         const product = await Product.create({
@@ -36,10 +36,10 @@ const addMachine = async (req, res) => {
         });
 
         const machine = await Machine.create({
-            machineType: type,
+            machineType,
             warranty,
             cnc,
-            size: machineSize
+            size
         });
 
         await machine.setProduct(product);
@@ -82,8 +82,44 @@ const deleteMachine = async (req, res) => {
   }
 }
 
+const updateMachine = async (req, res) => {
+  const machineId = req.params.id;
+  const updatedData = req.body;
+  try {
+      const machine = await Blade.findOne({ where: { id: machineId }});
+      if (!machine) {
+          return res.status(404).json({ error: 'Blade not found' });
+      }
+      
+      await machine.update({
+        machineType: updatedData.machineType, 
+        warranty: updatedData.warranty, 
+        cnc: updatedData.cnc, 
+        size: updatedData.size, 
+      });
+
+      const product = await Product.findOne({ where: { id: blade.productId }});
+      if (!product) {
+          return res.status(404).json({ error: 'Associated product not found' });
+      }
+      await product.update({ 
+          title: updatedData.title,
+          industry: updatedData.industry,
+          price: updatedData.price,
+          description: updatedData.description,
+          images: updatedData.images
+      });
+  
+      res.status(200).json({ message: 'Machine updated successfully' });
+  } catch (error) {
+      console.error('Error updating blade:', error);
+      res.status(500).json({ error: 'Unable to update blade' });
+  }
+}
+
 module.exports = {
     getAllMachines,
     addMachine,
-    deleteMachine
+    deleteMachine,
+    updateMachine
 }
