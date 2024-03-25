@@ -4,18 +4,18 @@ const session = require('express-session');
 const passportSetup = require('./passport');
 const authRoute = require('./routers/auth');
 
+const users = require('./routers/user');
+const blades = require('./routers/blade');
+const machines = require('./routers/machine');
+// const productRatings = require('./routers/productRating');
+// const orders = require('./routers/order');
+// const reviews = require('./routers/review');
+
 const cors = require("cors");
 const bodyParser = require('body-parser');
 
 const express = require('express');
 const app = express();
-
-const users = require('./routers/user');
-const blades = require('./routers/comment');
-const machines = require('./routers/group');
-const productRatings = require('./routers/userReviewRate');
-const orders = require('./routers/tag');
-const reviews = require('./routers/review');
 
 app.use(
     session({
@@ -37,16 +37,15 @@ app.use(
 );
 
 app.use('/auth', authRoute);
-
 app.use(bodyParser.json());
 app.use(express.json());
 
 app.use('/api/users', users);
-app.use('/api/reviews', reviews);
-app.use('/api/blades', comments);
-app.use('/api/machines', groups);
-app.use('/api/orders', tags);
-app.use('/api/ratings', userRatings);
+app.use('/api/blades', blades);
+app.use('/api/machines', machines);
+// app.use('/api/reviews', reviews);
+// app.use('/api/orders', orders);
+// app.use('/api/ratings', productRatings);
 
 app.listen(process.env.PORT, () => {
     console.log(`Express server is running on port 5000...`);

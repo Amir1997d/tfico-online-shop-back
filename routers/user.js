@@ -12,9 +12,7 @@ const { getAllUsers,
 router.get('/', getAllUsers);
 router.get('/:userId', getUserById);
 router.get('/get-username/:userId', getUsernameById);
-router.put('/preferred-lang', updatePreferredLang);
 router.delete('/delete-user', deleteUser);
-router.put('/user-status', updateUserStatus);
 router.put('/user-role', updateUserRole);
 
 module.exports = router;

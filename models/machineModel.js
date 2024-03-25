@@ -18,6 +18,8 @@ const Machine = sequelize.define('machine', {
         type: DataTypes.STRING,
         allowNull: false,
     }
+}, {
+    timestamps: false
 });
 
 module.exports = { Machine };

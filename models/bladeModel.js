@@ -3,7 +3,7 @@ const { DataTypes } = require('sequelize');
 
 const Blade = sequelize.define('blade', {
     dementions: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
     },
     material: {
@@ -22,6 +22,8 @@ const Blade = sequelize.define('blade', {
         type: DataTypes.STRING,
         allowNull: false,
     }
+}, {
+    timestamps: false
 });
 
 module.exports = { Blade };

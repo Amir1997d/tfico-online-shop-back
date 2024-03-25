@@ -6,7 +6,14 @@ const sequelize = new Sequelize('tfi', '', '', {
     dialect: 'postgres',
 });
 
-sequelize.sync();
+sequelize.sync()
+  .then(() => {
+    console.log('Database synchronized successfully');
+  })
+  .catch(error => {
+    console.error('Error synchronizing database:', error);
+  });
+
 
 module.exports = {
   sequelize
