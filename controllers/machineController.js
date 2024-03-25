@@ -4,10 +4,7 @@ const { Product } = require('../models/productModel');
 const getAllMachines = async (req, res) => {
     try {
       const machines = await Machine.findAll({
-        include: {
-          model: Product,
-          attributes: ['title', 'industry', 'price', 'description', 'images'],
-        },
+        include: [Product]
       });
       res.status(200).json(machines);
     } catch (error) {
@@ -54,7 +51,39 @@ const addMachine = async (req, res) => {
     }
 }
 
+const deleteMachine = async (req, res) => {
+  try {
+    const machine = await Machine.findOne({
+      where: {
+        id: req.params.id
+      }
+    });
+
+    if(!machine) {
+      return res.status(404).json({ error: 'Machine not found' });
+    }
+
+    await Machine.destroy({
+      where: {
+        id: req.params.id
+      }
+    });
+
+    await Product.destroy({
+      where: {
+        id: machine.productId
+      }
+    });
+
+    res.status(202).json({ message: "Machine is deleted!" });
+  } catch (error) {
+    console.error('Error deleting machine:', error);
+    res.status(500).json({ error: 'Unable to delete machine' });
+  }
+}
+
 module.exports = {
     getAllMachines,
     addMachine,
+    deleteMachine
 }

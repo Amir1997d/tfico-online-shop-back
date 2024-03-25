@@ -1,6 +1,17 @@
 const { Blade } = require('../models/bladeModel');
 const { Product } = require('../models/productModel');
 
+
+const getAllProducts = async (req, res) => {
+    try {
+        const products = await Product.findAll();
+        res.status(200).json(products);
+    } catch(error) {
+        console.error('Error fetching products:', error);
+        res.status(500).json({ error: 'Unable to fetch prooducts' });
+    }
+}
+
 const getAllBlades = async (req, res) => {
     try {
         const blades = await Blade.findAll({
@@ -46,7 +57,7 @@ const addBlade = async (req, res) => {
         });
 
         await blade.setProduct(product);
-        
+
         res.status(200).json({ message: "blade is added!" });
     } catch(error) {
         console.error('Error adding blade:', error);
@@ -54,7 +65,34 @@ const addBlade = async (req, res) => {
     }
 }
 
+const deleteBlade = async (req, res) => {
+    try {
+        const blade = await Blade.findOne({
+            where: {
+                id: req.params.id
+            }
+        });
+
+        if(!blade) {
+            return res.status(404).json({ error: 'Blade not found' });
+        }
+
+        await Blade.destroy({ where: { id: req.params.id }});
+        await Product.destroy({
+            where: {
+              id: blade.productId
+            }
+          });
+        res.status(202).json({ message: "Blade is deleted!" });
+    } catch (error) {
+      console.error('Error deleting machine:', error);
+      res.status(500).json({ error: 'Unable to delete machine' });
+    }
+  }
+
 module.exports = {
+    getAllProducts,
     getAllBlades,
     addBlade,
+    deleteBlade
 }
