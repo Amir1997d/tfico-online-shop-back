@@ -11,7 +11,7 @@ const Order = sequelize.define('order', {
         allowNull: false,
     },
     totalPrice: {
-        type: DataTypes.DECIMAL(13,4),
+        type: DataTypes.DECIMAL(13,2),
         allowNull: false,
     },
     deliveryAddress: {

@@ -151,11 +151,12 @@ const updateUserRole = async (req, res) => {
 
 const signup = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, email } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = User.create({
+    await User.create({
       username,
       password: hashedPassword,
+      email
     });
     res.status(201).json({ message: 'User created successfully' });
   } catch (error) {
@@ -179,7 +180,7 @@ const login = async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    res.status(200).json({ message: 'Login successful' });
+    res.status(200).json({ user, message: 'Login successful' });
   } catch (error) {
     console.error('Error in login:', error);
     res.status(500).json({ message: 'Internal server error' });

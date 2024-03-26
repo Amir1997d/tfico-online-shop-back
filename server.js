@@ -7,8 +7,8 @@ const authRoute = require('./routers/auth');
 const users = require('./routers/user');
 const blades = require('./routers/blade');
 const machines = require('./routers/machine');
+const orders = require('./routers/order');
 // const productRatings = require('./routers/productRating');
-// const orders = require('./routers/order');
 // const reviews = require('./routers/review');
 
 const cors = require("cors");
@@ -43,8 +43,8 @@ app.use(express.json());
 app.use('/api/users', users);
 app.use('/api/blades', blades);
 app.use('/api/machines', machines);
+app.use('/api/orders', orders);
 // app.use('/api/reviews', reviews);
-// app.use('/api/orders', orders);
 // app.use('/api/ratings', productRatings);
 
 app.listen(process.env.PORT, () => {

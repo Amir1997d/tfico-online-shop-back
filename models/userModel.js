@@ -1,6 +1,7 @@
 const { sequelize } = require('../db');
 const { DataTypes } = require('sequelize');
 const { Review } = require('./reviewModel');
+const { Order } = require('./orderModel');
 
 
 const User = sequelize.define('user', {
@@ -57,7 +58,7 @@ const User = sequelize.define('user', {
 // User.hasMany(ProductRating);
 // ProductRating.belongsTo(User); //one-to-many
 
-// User.hasMany(Order);
-// Order.belongsTo(User); //one-to-many
+User.hasMany(Order);
+Order.belongsTo(User); //one-to-many
 
 module.exports = { User };

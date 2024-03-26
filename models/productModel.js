@@ -3,6 +3,7 @@ const { DataTypes } = require('sequelize');
 const { Machine } = require('./machineModel');
 const { Blade } = require('./bladeModel');
 const { Review } = require('./reviewModel');
+const { Order } = require('./orderModel');
 
 const Product = sequelize.define('product', {
     title: {
@@ -35,5 +36,8 @@ Machine.belongsTo(Product);
 
 Product.hasMany(Review);
 Review.belongsTo(Product);
+
+Product.hasOne(Order);
+Order.belongsTo(Product);
 
 module.exports = { Product };
