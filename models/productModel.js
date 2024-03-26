@@ -4,6 +4,7 @@ const { Machine } = require('./machineModel');
 const { Blade } = require('./bladeModel');
 const { Review } = require('./reviewModel');
 const { Order } = require('./orderModel');
+const { ProductRating } = require('./productRatingModel');
 
 const Product = sequelize.define('product', {
     title: {
@@ -39,5 +40,8 @@ Review.belongsTo(Product);
 
 Product.hasOne(Order);
 Order.belongsTo(Product);
+
+Product.hasMany(ProductRating);
+ProductRating.belongsTo(Product); //one-to-many
 
 module.exports = { Product };

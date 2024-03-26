@@ -14,4 +14,4 @@ const ProductRating = sequelize.define('product_rating', {
   timestamps: false
 });
 
-module.exports = { UserReviewRating };
+module.exports = { ProductRating };

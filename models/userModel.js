@@ -52,11 +52,12 @@ const User = sequelize.define('user', {
     }
 });
 
-// User.hasMany(Review);
-// Review.belongsTo(User); //one-to-many
 
 // User.hasMany(ProductRating);
 // ProductRating.belongsTo(User); //one-to-many
+
+User.hasMany(Review);
+Review.belongsTo(User); //one-to-many
 
 User.hasMany(Order);
 Order.belongsTo(User); //one-to-many
