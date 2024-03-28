@@ -187,6 +187,23 @@ const login = async (req, res) => {
   }
 };
 
+const updatePassword = async (req, res) => {
+  try {
+    const { userId, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await User.update({ password: hashedPassword },
+    {
+      where: {
+        id: userId
+      }
+    });
+    res.status(201).json({ message: 'Password is updated!'});
+  } catch (error) {
+    console.error('Error updating password:', error);
+    res.status(500).json({ message: 'Unable to update password!' });
+  }
+}
+
 module.exports = {
     getAllUsers,
     addUserByGoogle,
@@ -196,5 +213,6 @@ module.exports = {
     deleteUser,
     updateUserRole,
     login,
-    signup
+    signup,
+    updatePassword
 }

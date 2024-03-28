@@ -13,6 +13,16 @@ const getAllMachines = async (req, res) => {
     }
 }
 
+const getMachineById = async (req, res) => {
+  try {
+    const machine = await Machine.findOne({where: {id: req.params.machineId}, include:[Product]});
+    res.status(200).json(machine);
+  } catch (error) {
+    console.error('Error fetching machine:', error);
+      res.status(500).json({ error: 'Unable to fetch machine' });
+  }
+}
+
 const addMachine = async (req, res) => {
     try{
         const { 
@@ -119,6 +129,7 @@ const updateMachine = async (req, res) => {
 
 module.exports = {
     getAllMachines,
+    getMachineById,
     addMachine,
     deleteMachine,
     updateMachine

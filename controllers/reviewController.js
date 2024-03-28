@@ -14,7 +14,7 @@ const getReviewsByProId = async (req, res) => {
     }
 }
 
-const addReview = (req, res) => {
+const addReview = async (req, res) => {
     const { userId, productId, username, text } = req.body;
     try {
         const review = await Review.create({

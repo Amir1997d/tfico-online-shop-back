@@ -125,10 +125,22 @@ const updateBlade = async (req, res) => {
         res.status(500).json({ error: 'Unable to update blade' });
     }
 }
+
+const getBladeById = async (req, res) => {
+    try {
+      const blade = await Blade.findOne({where: {id: req.params.bladeId}, include:[Product]});
+      res.status(200).json(blade);
+    } catch (error) {
+      console.error('Error fetching blade:', error);
+        res.status(500).json({ error: 'Unable to fetch blade' });
+    }
+  }
+
 module.exports = {
     getAllProducts,
     getAllBlades,
     addBlade,
     deleteBlade,
-    updateBlade
+    updateBlade,
+    getBladeById
 }
