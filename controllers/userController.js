@@ -2,22 +2,24 @@ const { User } = require('../models/userModel');
 const bcrypt = require('bcrypt');
 
 User.findOrCreateByGoogleId = async function (googleId, userData) {
-    const [user, created] = await this.findOrCreate({
-        where: { email: userData.email },
-        defaults: {
-            googleId,
-            username: userData.displayName,
-            email: userData.email,
-        }
-    });
-    if (!created) {
-        await this.update({ googleId }, {
-            where: {
-                email: userData.email
-            }
-        });
-    }
-    return { user, created };
+  const hashedPassword = await bcrypt.hash("defaultpasswordandsecret", 10);
+  const [user, created] = await this.findOrCreate({
+      where: { email: userData.email },
+      defaults: {
+          googleId,
+          username: userData.displayName,
+          email: userData.email,
+          password: hashedPassword
+      }
+  });
+  if (!created) {
+      await this.update({ googleId }, {
+          where: {
+              email: userData.email
+          }
+      });
+  }
+  return { user, created };
 };
 
 User.findOrCreateByYandexId = async function (yandexId, userData) {
