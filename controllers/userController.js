@@ -138,8 +138,8 @@ const deleteUser = async (req, res) => {
 
 const updateUserRole = async (req, res) => {
     try {
-        const { userId, userRole } = req.body; 
-        await User.update({ isAdmin: userRole }, {
+        const { userId, isAdmin } = req.body; 
+        await User.update({ isAdmin }, {
             where: {
                 id: userId
             }
