@@ -21,7 +21,11 @@ const Blade = sequelize.define('blade', {
     hardnessRanges: {
         type: DataTypes.STRING,
         allowNull: false,
-    }
+    },
+    // toothStep: {
+    //     type: DataTypes.STRING,
+    //     allowNull: true,
+    // }
 }, {
     timestamps: false
 });
