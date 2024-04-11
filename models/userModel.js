@@ -10,15 +10,20 @@ const User = sequelize.define('user', {
         allowNull: true,
         unique: true,
     },
-    yandexId: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        unique: true,
-    },
     username: {
         type: DataTypes.STRING,
         unique: true,
         allowNull: false,
+    },
+    firstName: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: true,
+    },
+    LastName: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: true,
     },
     password: {
         type: DataTypes.STRING,

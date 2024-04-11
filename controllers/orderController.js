@@ -1,5 +1,6 @@
 const { Order } = require('../models/orderModel');
 const { Product } = require('../models/productModel');
+const { User } = require('../models/userModel');
 const { Op } = require('sequelize');
 
 const getOrderById = async (req, res) => {
@@ -8,7 +9,7 @@ const getOrderById = async (req, res) => {
             where: {
                 id: req.params.orderId
             },
-            include: [Product]
+            include: [Product, User]
         });
         res.status(200).json(order);
     } catch (error) {
@@ -19,7 +20,9 @@ const getOrderById = async (req, res) => {
 
 const getAllOrders = async (req, res) => {
     try {
-        const orders = await Order.findAll();
+        const orders = await Order.findAll({
+            include: [Product, User]
+        });
         res.status(200).json(orders);
     } catch (error) {
         console.error('Error fetching orders:', error);
@@ -34,7 +37,8 @@ const getAllActiveOrders = async (req, res) => {
                 status: {
                   [Op.not]: 'closed'
                 }
-              }
+              },
+              include: [Product]
         });
         res.status(200).json(activeOrders);
     } catch (error) {
@@ -48,7 +52,8 @@ const getAllUserOrder = async (req, res) => {
         const orders = await Order.findAll({
             where: {
                 userId: req.params.userId
-            }
+            },
+            include: [Product]
         });
         res.status(200).json(orders);
     } catch (error) {
