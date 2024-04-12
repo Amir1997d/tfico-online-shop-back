@@ -8,7 +8,8 @@ const {
     getAllUserOrder, 
     addOrder, 
     updateOrder, 
-    deleteOrder 
+    deleteOrder,
+    updateStatus
 } = require('../controllers/orderController');
 
 router.get('/:orderId', getOrderById);
@@ -18,6 +19,7 @@ router.post('/active-orders', getAllActiveOrders);
 router.post('/add-order/:userId', addOrder);
 router.put('/update-order/:orderId', updateOrder);
 router.delete('/delete-order/:orderId', deleteOrder);
+router.put('/update-status/:orderId', updateStatus);
 
 
 module.exports = router;
