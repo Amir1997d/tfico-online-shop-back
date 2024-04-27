@@ -4,6 +4,8 @@ const User = require('../models/userModel');
 const express = require('express');
 router.use(express.json());
 
+const { login, signup, newToken, logout } = require('../controllers/authController');
+
 router.get("/login/success", (req, res) => {
     if(req.user) {
         res.status(200).json({
@@ -47,12 +49,10 @@ router.get("/google/callback", passport.authenticate("google", {
     failureRedirect: "/login/failed"
 })); 
 
-//Yandex Callbacks
-router.get("/yandex", passport.authenticate("yandex", { scope: ["profile", "email"] }));
-
-router.get("/yandex/callback", passport.authenticate("yandex", {
-    successRedirect: process.env.CLIENT_URL,
-    failureRedirect: "/login/failed"
-}));
+router.post('/signup', signup);
+router.post('/login', login);
+router.post('/token', newToken);
+router.delete('/logout', logout);
+router.post('/refresh', newToken);
 
 module.exports = router;

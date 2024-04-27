@@ -17,12 +17,12 @@ const User = sequelize.define('user', {
     },
     firstName: {
         type: DataTypes.STRING,
-        unique: true,
+        unique: false,
         allowNull: true,
     },
-    LastName: {
+    lastName: {
         type: DataTypes.STRING,
-        unique: true,
+        unique: false,
         allowNull: true,
     },
     password: {

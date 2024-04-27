@@ -1,44 +1,6 @@
 const { User } = require('../models/userModel');
 const bcrypt = require('bcrypt');
-
-User.findOrCreateByGoogleId = async function (googleId, userData) {
-  const hashedPassword = await bcrypt.hash("defaultpasswordandsecret", 10);
-  const [user, created] = await this.findOrCreate({
-      where: { email: userData.email },
-      defaults: {
-          googleId,
-          username: userData.displayName,
-          email: userData.email,
-          password: hashedPassword
-      }
-  });
-  if (!created) {
-      await this.update({ googleId }, {
-          where: {
-              email: userData.email
-          }
-      });
-  }
-  return { user, created };
-};
-
-User.findOrCreateByYandexId = async function (yandexId, userData) {
-    const [user, created] = await this.findOrCreate({
-        where: { yandexId, email: userData.email, },
-        defaults: {
-            username: userData.displayName,
-            email: userData.email,
-        }
-    });
-    if (!created) {
-        await this.update({ yandexId }, {
-            where: {
-                email: userData.email
-            }
-        });
-    }
-    return { user, created };
-};
+require('dotenv').config();
 
 const getAllUsers = async (req, res) => {
     try {
@@ -50,61 +12,51 @@ const getAllUsers = async (req, res) => {
     }
 }
 
-const addUserByGoogle = async (profile) => {
-    try {
-        const googleId = profile.id;
-        const userData = {
-            displayName: profile.displayName,
-            email: profile.emails[0].value,
-        };
-        const { user, created } = await User.findOrCreateByGoogleId(googleId, userData);
-        if (created) {
-            console.log('New user created:', user);
-        } else {
-            console.log('User is updated:', user);
-        }
-    } catch (error) {
-        console.error('Error creating user:', error);
-    }  
-}
-
-const addUserByYandex = async (profile) => {
-    try {
-        const yandexId = profile.id;
-        const userData = {
-            displayName: profile.displayName,
-            email: profile.emails[0].value,
-        };
-        const { user, created } = await User.findOrCreateByYandexId(yandexId, userData);
-        if (created) {
-            console.log('New user created:', user);
-        } else {
-            console.log('User is updated:', user);
-        }
-    } catch (error) {
-        console.error('Error creating user:', error);
-    }
-}
-
 const getUserById = async (req, res) => {
     try {
       let user = await User.findOne({
         where: {
-          yandexId: req.params.userId
+          id: req.params.userId
         }
       });
-      if(user === null) {
-        user = await User.findOne({
-            where: {
-              googleId: req.params.userId
-            }
-          });
+      const responseUser = {
+        id: user.id,
+        username: user.username,
+        isAdmin: user.isAdmin,
       }
-      res.status(200).json(user);
+      res.status(200).json(responseUser);
     } catch (error) {
       console.error('Error fetching user:', error);
       res.status(500).json({ error: 'Unable to fetch user' });
     }
+}
+
+const getUser = async (req, res) => {
+  try {
+    let user = await User.findOne({
+      where: {
+        id: req.params.userId
+      }
+    });
+    if(!user) {
+      return res.status(404).json({ message: "User does not exist!"});
+    }
+    const responseUser = {
+      id: user.id,
+      username: user.username,
+      firstName: user.firstName, 
+      lastName: user.lastName, 
+      email: user.email, 
+      phone: user.phone, 
+      postalCode: user.postalCode, 
+      city: user.city, 
+      address: user.address
+    }
+    res.status(200).json(responseUser);
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ error: 'Unable to fetch user' });
+  }
 }
 
 const getUsernameById = async (req, res) => {
@@ -151,44 +103,6 @@ const updateUserRole = async (req, res) => {
     }
 }
 
-const signup = async (req, res) => {
-  try {
-    const { username, password, email } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await User.create({
-      username,
-      password: hashedPassword,
-      email
-    });
-    res.status(201).json({ message: 'User created successfully' });
-  } catch (error) {
-    console.error('Error in signup:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-};
-
-const login = async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    const user = await User.findOne({ username });
-
-    if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
-
-    const passwordMatch = await bcrypt.compare(password, user.password);
-
-    if (!passwordMatch) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
-
-    res.status(200).json({ user, message: 'Login successful' });
-  } catch (error) {
-    console.error('Error in login:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-};
-
 const updatePassword = async (req, res) => {
   try {
     const { userId, password } = req.body;
@@ -206,15 +120,40 @@ const updatePassword = async (req, res) => {
   }
 }
 
+const updateUserInfo = async (req, res) => {
+  try {
+    const { 
+      userId,
+      firstName,
+      lastName,
+      email,
+      phone,
+      city,
+      postalCode,
+      address 
+    } = req.body;
+    
+    await User.update({ firstName, lastName, email, phone, postalCode, city, address},
+    {
+      where: {
+        id: userId
+      }
+    });
+    res.status(201).json({ message: 'Password is updated!'});
+  } catch (error) {
+    console.error('Error updating password:', error);
+    res.status(500).json({ message: 'Unable to update password!' });
+  }
+}
+
+
 module.exports = {
     getAllUsers,
-    addUserByGoogle,
-    addUserByYandex,
     getUserById,
     getUsernameById,
     deleteUser,
     updateUserRole,
-    login,
-    signup,
-    updatePassword
+    updatePassword,
+    updateUserInfo,
+    getUser
 }

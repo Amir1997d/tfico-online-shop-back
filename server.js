@@ -3,13 +3,14 @@ const passport = require('passport');
 const session = require('express-session');
 const passportSetup = require('./passport');
 const authRoute = require('./routers/auth');
+const jwt = require('jsonwebtoken');
 
 const users = require('./routers/user');
 const blades = require('./routers/blade');
 const machines = require('./routers/machine');
 const orders = require('./routers/order');
 const reviews = require('./routers/review');
-// const productRatings = require('./routers/productRating');
+//const productRatings = require('./routers/productRating');
 
 const cors = require("cors");
 const bodyParser = require('body-parser');
@@ -45,7 +46,7 @@ app.use('/api/blades', blades);
 app.use('/api/machines', machines);
 app.use('/api/orders', orders);
 app.use('/api/reviews', reviews);
-// app.use('/api/ratings', productRatings);
+//app.use('/api/ratings', productRatings);
 
 app.listen(process.env.PORT, () => {
     console.log(`Express server is running on port 5000...`);
