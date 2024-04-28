@@ -4,7 +4,7 @@ const User = require('../models/userModel');
 const express = require('express');
 router.use(express.json());
 
-const { login, signup, newToken, logout } = require('../controllers/authController');
+const { login, signup, newToken, logout, addUserByGoogle } = require('../controllers/authController');
 
 router.get("/login/success", (req, res) => {
     if(req.user) {
@@ -48,6 +48,17 @@ router.get("/google/callback", passport.authenticate("google", {
     successRedirect: process.env.CLIENT_URL,
     failureRedirect: "/login/failed"
 })); 
+
+// router.get("/google/callback", passport.authenticate("google", {
+//     failureRedirect: "/login/failed",
+//     successRedirect: process.env.CLIENT_URL,
+//   }), (req, res) => {
+//     // Assuming the user object is available in req.user after authentication
+//     const { accessToken, refreshToken, user } = req.user;
+//     res.json({ accessToken, refreshToken, user });
+// });
+              
+
 
 router.post('/signup', signup);
 router.post('/login', login);

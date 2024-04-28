@@ -13,9 +13,11 @@ User.findOrCreateByGoogleId = async function (googleId, userData) {
         where: { email: userData.email },
         defaults: {
             googleId,
-            username: userData.displayName,
+            username: userData.name.familyName + "_" + Math.floor(100000 + Math.random() * 900000),
             email: userData.email,
             password: hashedPassword,
+            firstName:  userData.name.givenName,
+            lastName: userData.name.familyName
         }
     });
     if (!created) {
@@ -32,7 +34,7 @@ const addUserByGoogle = async (profile) => {
     try {
         const googleId = profile.id;
         const userData = {
-            displayName: profile.displayName,
+            name: profile.name,
             email: profile.emails[0].value,
         };
         const { user, created } = await User.findOrCreateByGoogleId(googleId, userData);
@@ -49,6 +51,14 @@ const addUserByGoogle = async (profile) => {
         } else {
             console.log('User is updated:', user);
         }
+
+        const userResponse = {
+            userId: user.id,
+            username: user.username,
+            isAdmin: user.isAdmin
+        };
+
+        return { accessToken, refreshToken, user: userResponse };
     } catch (error) {
         console.error('Error creating user:', error);
     }  
@@ -88,8 +98,6 @@ const signup = async (req, res) => {
                 userId: newUser.id
             });
 
-            // refreshTokens.push(refreshToken);
-    
             const userResponse = {
                 userId: newUser.id,
                 username: newUser.username,
@@ -131,8 +139,6 @@ const login = async (req, res) => {
             userId: user.id
         });
 
-        // refreshTokens.push(refreshToken);
-
         const userResponse = {
             userId: user.id,
             username: user.username,
@@ -166,7 +172,6 @@ const newToken = async (req, res) => {
 
 const logout = async (req, res) => {
     const { token, userId } = req.body;
-    console.log(userId);
     refreshTokens.filter(token => token !== req.body.token);
     await RefreshToken.destroy({
         where: {
