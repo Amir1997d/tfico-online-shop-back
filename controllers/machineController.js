@@ -42,7 +42,7 @@ const addMachine = async (req, res) => {
             industry,
             price,
             description,
-            images
+            images: images
         });
 
         const machine = await Machine.create({

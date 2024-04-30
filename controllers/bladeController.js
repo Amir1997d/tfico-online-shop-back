@@ -45,7 +45,7 @@ const addBlade = async (req, res) => {
             industry,
             price,
             description,
-            images
+            images: images
         });
 
         const blade = await Blade.create({
