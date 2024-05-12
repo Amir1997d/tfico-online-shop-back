@@ -2,7 +2,7 @@ const express = require("express");
 
 const router = express.Router();
 
-router.post("/contact-us", async (req, res) => {
+const sendEmail = async (req, res) => {
   const { sendFrom, name, email, phone, images, message } = req.body;
   try {
     await fetch(process.env.EMAIL_SERVER_URI, {
@@ -24,6 +24,8 @@ router.post("/contact-us", async (req, res) => {
     console.log("Some Error From Server Side:", err);
     res.status(500).json({message: "Email Is Not Sent!"});
   }
-});
+}
+
+router.post("/", sendEmail);
 
 module.exports = router;
