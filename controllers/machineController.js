@@ -96,7 +96,7 @@ const updateMachine = async (req, res) => {
   const machineId = req.params.id;
   const updatedData = req.body;
   try {
-      const machine = await Blade.findOne({ where: { id: machineId }});
+      const machine = await Machine.findOne({ where: { id: machineId }});
       if (!machine) {
           return res.status(404).json({ error: 'Blade not found' });
       }
@@ -108,7 +108,7 @@ const updateMachine = async (req, res) => {
         size: updatedData.size, 
       });
 
-      const product = await Product.findOne({ where: { id: blade.productId }});
+      const product = await Product.findOne({ where: { id: machine.productId }});
       if (!product) {
           return res.status(404).json({ error: 'Associated product not found' });
       }
@@ -122,8 +122,8 @@ const updateMachine = async (req, res) => {
   
       res.status(200).json({ message: 'Machine updated successfully' });
   } catch (error) {
-      console.error('Error updating blade:', error);
-      res.status(500).json({ error: 'Unable to update blade' });
+      console.error('Error updating machine:', error);
+      res.status(500).json({ error: 'Unable to update machine' });
   }
 }
 
