@@ -1,23 +1,29 @@
-// const express = require('express');
-// const router = express.Router();
+const express = require("express");
 
-// const formData = require('form-data');
-// const Mailgun = require('mailgun.js');
-// const mailgun = new Mailgun(formData);
-// const mg = mailgun.client({username: 'api', key: process.env.MAILGUN_API_KEY || 'key-yourkeyhere'});
+const router = express.Router();
 
-// const sendEmail = () => {
-//     mg.messages.create('sandbox-123.mailgun.org', {
-//         from: "Excited User <mailgun@sandbox-123.mailgun.org>",
-//         to: ["test@example.com"],
-//         subject: "Hello",
-//         text: "Testing some Mailgun awesomeness!",
-//         html: "<h1>Testing some Mailgun awesomeness!</h1>"
-//     })
-//     .then(msg => console.log(msg)) // logs response data
-//     .catch(err => console.log(err)); // logs any error
-// }
+router.post("/contact-us", async (req, res) => {
+  const { sendFrom, name, email, phone, images, message } = req.body;
+  try {
+    await fetch(process.env.EMAIL_SERVER_URI, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ sendFrom, name, email, phone, images, message }),
+      }
+    )
+    .then(res => { 
+      res.json()
+      if(!res.ok) {
+        return res.status(500).json({message: "Email Is Not Sent(n8n)!"});
+      }
+    })
+    res.status(200).json({message: "Email Is Sent!"});
+  } catch (err) {
+    console.log("Some Error From Server Side:", err);
+    res.status(500).json({message: "Email Is Not Sent!"});
+  }
+});
 
-// router.post('/', sendEmail);
-
-// module.exports = router;
+module.exports = router;

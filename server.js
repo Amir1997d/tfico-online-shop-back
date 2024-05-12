@@ -10,8 +10,6 @@ const blades = require('./routers/blade');
 const machines = require('./routers/machine');
 const orders = require('./routers/order');
 const reviews = require('./routers/review');
-//const productRatings = require('./routers/productRating');
-
 const emails = require('./routers/email');
 
 const cors = require("cors");
@@ -48,9 +46,7 @@ app.use('/api/blades', blades);
 app.use('/api/machines', machines);
 app.use('/api/orders', orders);
 app.use('/api/reviews', reviews);
-
-//app.use('/api/ratings', productRatings);
-// app.use('/api/email', emails);
+app.use('/api/email', emails);
 
 app.listen(process.env.PORT, () => {
     console.log(`Express server is running on port 5000...`);
