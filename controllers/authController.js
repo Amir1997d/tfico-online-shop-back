@@ -37,20 +37,25 @@ const addUserByGoogle = async (profile) => {
             name: profile.name,
             email: profile.emails[0].value,
         };
-        const { user, created } = await User.findOrCreateByGoogleId(googleId, userData);
+        const {user} = await User.findOrCreateByGoogleId(googleId, userData);
 
-        const accessToken = jwt.sign({ userId: user.id, isAdmin: user.isAdmin }, 
+        const accessToken = jwt.sign({ userId: user.id, username: user.username, isAdmin: user.isAdmin }, 
             process.env.JSON_ACCESS_TOKEN_SECRET_KEY, 
             { expiresIn: '30m' });
     
-        const refreshToken = jwt.sign({ userId: user.id, isAdmin: user.isAdmin }, 
+        const refreshToken = jwt.sign({ userId: user.id, username: user.username, isAdmin: user.isAdmin }, 
             process.env.JSON_REFRESH_TOKEN_SECRET_KEY);
 
-        if (created) {
-            console.log('New user created:', user);
-        } else {
-            console.log('User is updated:', user);
-        }
+        // if (created) {
+        //     console.log('New user created:', user);
+        // } else {
+        //     console.log('User is updated:', user);
+        // }
+
+        await RefreshToken.create({
+            refreshToken: refreshToken,
+            userId: user.id
+        });
 
         const userResponse = {
             userId: user.id,
@@ -170,8 +175,20 @@ const newToken = async (req, res) => {
     })
 }
 
-const logout = async (req, res) => {
-    const { token, userId } = req.body;
+// const logout = async (req, res) => {
+//     const { token, userId } = req.body;
+//     refreshTokens.filter(token => token !== req.body.token);
+//     await RefreshToken.destroy({
+//         where: {
+//             refreshToken: token,
+//             userId: userId
+//         }
+//     });
+//     res.status(204).json({ message: "User is logged out!"});
+// }
+
+const logout = async (body) => {
+    const { token, userId } = body;
     refreshTokens.filter(token => token !== req.body.token);
     await RefreshToken.destroy({
         where: {
@@ -179,7 +196,7 @@ const logout = async (req, res) => {
             userId: userId
         }
     });
-    res.status(204).json({ message: "User is logged out!"});
+    return { message: "Loged Out!"}
 }
 
 module.exports = {

@@ -14,9 +14,13 @@ passport.use(
             callbackURL: "/auth/google/callback",
             scope: ["profile", "email"]
         },
-        async function(accessToken, refreshToken, profile, done) {
-            await addUserByGoogle(profile);
-            done(null, profile);
+        async (accessToken, refreshToken, profile, done) => {
+            try {
+                const { accessToken, refreshToken, user } = await addUserByGoogle(profile);
+                return done(null, { accessToken, refreshToken, user });
+            } catch (error) {
+                return done(error);
+            }
         }
     )
 );
