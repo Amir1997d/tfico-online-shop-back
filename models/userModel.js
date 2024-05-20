@@ -2,6 +2,7 @@ const { sequelize } = require('../db');
 const { DataTypes } = require('sequelize');
 const { Review } = require('./reviewModel');
 const { Order } = require('./orderModel');
+const { Storage } = require('./storageModel');
 
 
 const User = sequelize.define('user', {
@@ -58,8 +59,8 @@ const User = sequelize.define('user', {
 });
 
 
-// User.hasMany(ProductRating);
-// ProductRating.belongsTo(User); //one-to-many
+User.hasMany(Storage);
+Storage.belongsTo(User); //one-to-many
 
 User.hasMany(Review);
 Review.belongsTo(User); //one-to-many

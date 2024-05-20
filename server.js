@@ -11,6 +11,7 @@ const machines = require('./routers/machine');
 const orders = require('./routers/order');
 const reviews = require('./routers/review');
 const emails = require('./routers/email');
+const storage = require('./routers/storage');
 
 const cors = require("cors");
 const bodyParser = require('body-parser');
@@ -47,6 +48,7 @@ app.use('/api/machines', machines);
 app.use('/api/orders', orders);
 app.use('/api/reviews', reviews);
 app.use('/api/email', emails);
+app.use('/api/storage', storage);
 
 app.listen(process.env.PORT, () => {
     console.log(`Express server is running on port 5000...`);
