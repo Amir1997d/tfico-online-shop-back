@@ -27,15 +27,34 @@ const getElementById = async (req, res) => {
 const addElement = async (req, res) => {
   try {
     const { group, username, userId, title, quantity, unit } = req.body;
-    await Storage.create({
-      group, 
-      username, 
-      userId, 
-      title, 
-      quantity, 
-      unit,
-    });
-    res.status(201).json({ message: "element is added!" });
+    const exist = await Storage.findOne({
+      where: {
+        group, 
+        title,  
+        unit,
+      }
+    })
+    if(exist) {
+      await exist.update({
+        group, 
+        username, 
+        userId, 
+        title, 
+        quantity: Number(exist.quantity) + Number(quantity), 
+        unit,
+      });
+    }
+    else {
+      await Storage.create({
+        group, 
+        username, 
+        userId, 
+        title, 
+        quantity, 
+        unit,
+      });
+    }
+    res.status(201).json({ message: !exist ? "element is added!" : "Item is updated!" });
   } catch (error) {
     console.error('Error adding element:', error);
     res.status(500).json({ error: 'Unable to add element!' });
