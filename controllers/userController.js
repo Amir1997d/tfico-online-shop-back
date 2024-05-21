@@ -50,7 +50,9 @@ const getUser = async (req, res) => {
       phone: user.phone, 
       postalCode: user.postalCode, 
       city: user.city, 
-      address: user.address
+      address: user.address,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     }
     res.status(200).json(responseUser);
   } catch (error) {
